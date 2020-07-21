@@ -11,27 +11,14 @@
 
 #NOTE: If you cannot install softwares viaBiocManaager, try this option #https://community.rstudio.com/t/install-packages-unable-to-access-index-for-repository-try-disabling-secure-download-method-for-http/16578
 
-#install.packages("BiocManager")
+
 library(BiocManager)
-#BiocManager::install("Rbowtie2")
-#BiocManager::install("Rsamtools")
-#BiocManager::install("BBCAnalyzer")
 library(Rbowtie2)
 library(Rsamtools)
-#library(BBCAnalyzer)
-#install.packages("dplyr")
 library(dplyr)
-#source("https://bioconductor.org/biocLite.R")
-#biocLite("VariantTools") #OR
-#BiocManager::install("VariantTools")
 library(VariantTools)
-#install.packages("devtools")
 library(devtools)
-#devtools::install_github(repo="knausb/vcfR") 
-#For Mac- make sure "checkbashisms" is installed <https://brewinstall.org/install-checkbashisms-on-mac-with-brew/>
-#For Windows- make sure "Rtools" is installed <https://cran.r-project.org/bin/windows/Rtools/>
 library(vcfR)
-#install.packages("ape")
 library(ape)
 
 
@@ -86,7 +73,7 @@ indexBam(sorted)
 #Step6:Variant Calling- generated using "Freebayes" software.
 
 #make sure to add your system path to laod freebayes
-system("/Users/jigyasa.arora/opt/anaconda3/bin/freebayes -f ../working_data/sequence.fasta ../working_data/sorted_mutant1.bam -p 1 -v ../working_data/sorted_mutant1.vcf")
+system("freebayes -f ../working_data/sequence.fasta ../working_data/sorted_mutant1.bam -p 1 -v ../working_data/sorted_mutant1.vcf")
 #-p 1 is ploidy set to haploid species
 
 
