@@ -16,7 +16,6 @@ library(BiocManager)
 library(Rbowtie2)
 library(Rsamtools)
 library(dplyr)
-library(VariantTools)
 library(devtools)
 library(vcfR)
 library(ape)
@@ -81,9 +80,9 @@ system("freebayes -f ../working_data/sequence.fasta ../working_data/sorted_mutan
 #https://knausb.github.io/vcfR_documentation/filtering_data.html
 
 #visualize the VCF file-
-vcf_file <- dir("../working_data", "sorted_mutant1.vcf",full.names = TRUE)[2]
-dna_file <- dir("../working_data/", "sequence.fasta", full.names = TRUE)[1]
-gff_file <- dir("../raw_data/", "GCF_000005845.2_ASM584v2_genomic.gff", full.names = TRUE)
+vcf_file <- dir("../working_data", "sorted_mutant1.vcf",full.names = TRUE)
+dna_file <- dir("../working_data", "sequence.fasta", full.names = TRUE)[1]
+gff_file <- dir("../raw_data", "GCF_000005845.2_ASM584v2_genomic.gff", full.names = TRUE)
 
 vcf <- read.vcfR(vcf_file, verbose = FALSE)
 dna <- ape::read.dna(dna_file, format = "fasta")
