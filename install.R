@@ -11,13 +11,14 @@ install.packages("dplyr")
 #biocLite("VariantTools") #OR
 BiocManager::install("VariantTools")
 
-install.packages("devtools")
+
 
 ##If you are installing on local computer-
 #devtools::install_github(repo="knausb/vcfR") 
 #For Mac- make sure "checkbashisms" is installed <https://brewinstall.org/install-checkbashisms-on-mac-with-brew/>
 #For Windows- make sure "Rtools" is installed <https://cran.r-project.org/bin/windows/Rtools/>
-
-install.packages("https://cran.r-project.org/src/contrib/Archive/vcfR/vcfR_1.11.0.tar.gz", repos = NULL, type="source")
+install.packages("devtools")
+devtools::install_github(repo="knausb/vcfR")
+#install.packages("https://cran.r-project.org/src/contrib/Archive/vcfR/vcfR_1.11.0.tar.gz", repos = NULL, type="source")
 install.packages("ape")
 
