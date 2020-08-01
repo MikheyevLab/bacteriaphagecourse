@@ -1,9 +1,8 @@
-Scripts folder
+Scripts folder for complete analysis
 
-Check the html file for how the script should run like.
+Html file contains the Rmarkdown html version of complete analysis.
 
-Whule running "t5phage_dataanalysis.R" make the following changes-
-Change the current working directory in BINDER image to- /R/
+NOTE-While running "t5phage_dataanalysis_binder.R" make sure that the current working directory in the BINDER image is-
 >setwd("/home/jovyan/R/")
 
-OR run "t5phage_dataanalysis_binder.R"
+
