@@ -7,8 +7,8 @@ dependencies:
   - bowtie2
   - samtools
   - vcflib
-#  - r-glue
-#  - r-ape
-#  - r-dplyr
+  - r-glue
+  - r-ape
+  - r-dplyr
 #  - r-devtools
   
