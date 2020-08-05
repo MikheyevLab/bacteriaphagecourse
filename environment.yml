@@ -2,7 +2,7 @@ name: conda-environment
 channels:
   - bioconda
   - r
-  - conda-forge
+#  - conda-forge
 dependencies:
   - freebayes 
   - bowtie2
@@ -11,6 +11,6 @@ dependencies:
   - r-glue
   - r-ape
   - r-dplyr
-  - r-vcfr
+#  - r-vcfr
 #  - r-devtools
   
