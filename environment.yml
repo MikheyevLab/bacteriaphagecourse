@@ -1,9 +1,10 @@
 name: conda-environment
 channels:
   - bioconda
+  - conda-forge
   - r
 dependencies:
-  - r=3.6.1
+  - r-base
   - freebayes 
   - bowtie2
   - samtools
