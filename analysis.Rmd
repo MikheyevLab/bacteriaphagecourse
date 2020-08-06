@@ -76,6 +76,11 @@ cat(system(glue("grep -m2 -v ^# {sequencedSample}.vcf | cut -f1,2,4,5,6"), inter
 
 You will now have the alignment (files ending with `.bam` and its index `.bam.bai`), and the variant call file (`.vcf`), which are the end points of the computational analysis. You should download them and the reference sequence, index and annotation files (`ref/NC_012967.1.*`) to your local computer.
 
-Here is a walthrough of how to load the data:
+You will need to download the data from the virtual machine:
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/-AbSUeibAqI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
+Then you can load the data into the IGV browser:
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/hhCeJD7HRdI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
