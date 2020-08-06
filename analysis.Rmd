@@ -80,7 +80,6 @@ You will need to download the data from the virtual machine:
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/-AbSUeibAqI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-
 Then you can load the data into the IGV browser:
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/hhCeJD7HRdI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
