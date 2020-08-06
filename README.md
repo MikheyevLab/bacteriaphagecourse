@@ -1,8 +1,8 @@
 # Using re-sequencing to identify how *E.coli* bacteria evolve resistance to the T5 phage
 
+You can see a walkthough for one of the mutants [here](https://mikheyevlab.github.io/bacteriaphagecourse/).
 
-
-To launch it on binder [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/MikheyevLab/bacteriaphagecourse/master?urlpath=rstudio)
+To launch the repository on Binder and carry out your own analyses click the tag [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/MikheyevLab/bacteriaphagecourse/master?urlpath=rstudio)
  
 ## When you're done with the analysis
 
