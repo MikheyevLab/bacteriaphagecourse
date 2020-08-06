@@ -6,4 +6,3 @@ dependencies:
   - bowtie2
   - samtools
   - vcflib
-  

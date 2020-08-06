@@ -1,15 +1,15 @@
-# Analysis of E. coli resistant to infection by the T5 phage
+# Analysis of *E. coli* resistant to infection by the T5 phage
 
-We 
+We will use re-sequencing to understand the molecular nature of *E. coli* resistance to the T5 bacteriophage.
+
+This step uses sequenced raw reads (in compressed `fastq` files) to align them to the bacterial reference genome. Note that there are data on four squenced mutants and the wildtype in the `reads` folder.
 
 ## Load the R libraries 
 
 This step incorporates commands not found in the base R language
 
 ```{r}
-library(glue) # for generating command line commands
-library(vcfR) # for exploring VCF files
-library(ape)  # for reading sequence data
+library(glue) # for easily generating command line commands
 ```
 
 It Visualize the read quality via fastQC <optional>
@@ -21,85 +21,61 @@ It Visualize the read quality via fastQC <optional>
 Most aligners require a step like that for their algoritm to work. Genome alignment is not part of R, so we'll be executing a shell command using `system`.
 
 ```{r}
-system("bowtie2-build ref/sequence.fasta ref/ecoli")
+system("bowtie2-build ref/NC_012967.1.fasta ref/ecoli")
 ```
 
 Note that a bunch of files with the extension `.bt2` have been created in the `ref/` folder. That's the index.
 
 ## Map the mutant E.coli reads to the reference genome
 
-Like the aligner, the mapper is not part of base R. We'll create a command that maps the samples and sorts them. In this case we're using the 'bowtie2' aligner and `samtools` for converting between file formats, sorting and creating an index for the resulting files. This command is a bit complex, and you don't need to understand all of it. But do know that you can easily change which sample you want to run by changing the `sequencedSample` command. The `glue` command just inserts this variable into the string we'll execute in the shell.
+Like the aligner, the mapper is not part of base R. We'll create a command that maps the samples and sorts them. In this case we're using the 'bowtie2' aligner and `samtools` for converting between file formats, sorting and creating an index for the resulting files. This command is a bit complex, and you don't need to understand all of it. In fact, it's actually five separate commands that pass input to each other. But do know that you can easily change which sample you want to run by changing the `sequencedSample` variable. The `glue` command just inserts this variable into the string we'll execute in the shell.
 
 ```{r}
-sequencedSample  <- "wildtype_OIST-2015-03-28"
-(bowtieCommand <- glue("bowtie2 -x ref/ecoli reads/{sequencedSample}.fq.gz --rg-id {sequencedSample} --rg SM:{sequencedSample} | samtools view -Su - | samtools sort -o {sequencedSample}.bam - && samtools index {sequencedSample}.bam"))
-system(bowtieCommand)
-
+sequencedSample  <- "mutant3_OIST-2015-03-28"
 ```
 
-You will see that a files called `sequencedSample.bam` and its corresponding index `sequencedSample.bam.bai` have been created in the root directory.
+```{r}
+(bowtieCommand <- glue("bowtie2 -x ref/ecoli reads/{sequencedSample}.fq.gz --rg-id {sequencedSample} --rg SM:{sequencedSample} |
+samtools view -Su - | 
+samtools sort -o {sequencedSample}.bam - && 
+samtools index {sequencedSample}.bam"))
+system(bowtieCommand)
+```
+
+Ignore the `cat` command and the `intern = T` argument. They exist only to make the output prettier if you convert this document to HTML.
+
+You will see that a files called `sequencedSample.bam` and its corresponding index `sequencedSample.bam.bai` have been created in the root directory, where `sequencedSample` is the name of the variable you assigned in the this code chunk. You'll need both files for the genome browser later.
 
 What's inside an alignemnt file? You can read all about it in the [SAM format specification](https://samtools.github.io/hts-specs/SAMv1.pdf). Note that this is a file with a `.bam` extension, but it is basically just a compressed `.sam` file.
 
 ```{r}
-system(glue("samtools view {sequencedSample}.bam | head -5"))
+cat(system(glue("samtools view {sequencedSample}.bam | head -5"), intern = T))
 ```
 
 ## Variant Calling
 
 Again, we're using a standalone algorithm, in this case the `freebayes` software. The variant caller assigns a [quality score](https://en.wikipedia.org/wiki/Phred_quality_score) to each site, depending on how likely it is to exist in the data. The `vcffilter` gets rid of low-quality sites.
 
+We're cheating a little bit and asking freebayes only to call variants in the vicinity of the FhuA gene, i.e., on chromosome NC_012967.1 between bases 170,000 and 173,000. This speeds things up.
+
 ```{r}
-(freebayesCommand <- glue("freebayes -f ref/sequence.fasta {sequencedSample}.bam -p 1 | vcffilter -f \"QUAL > 20\" > {sequencedSample}.vcf"))
+(freebayesCommand <- glue("freebayes -r NC_012967.1:170000-173000 -f ref/NC_012967.1.fasta {sequencedSample}.bam -p 1 | 
+vcffilter -f \"QUAL > 20\"  > {sequencedSample}.vcf"))
 
 system(freebayesCommand)
 ```
 
-This will generate a `.vcf` file
+This will generate a `.vcf` file. You can and probably should take a look at it in a text editor. Looking at just a few columns, you see that there is a set of coordinates (first two columns), the reference base, the variant and its variant quality. I'm omitting a bunch of fields for simplicity.
+
 
 ```{r}
-system(glue("grep -m5 -v ^# {sequencedSample}.vcf"))
+cat(system(glue("grep -m2 -v ^# {sequencedSample}.vcf | cut -f1,2,4,5,6"), intern = T))
 ```
 
-#Step6.5:Visualize the variant calling file (.vcf file) and filter it.
-#https://knausb.github.io/vcfR_documentation/filtering_data.html
+## Visualize results
 
-#visualize the VCF file-
-vcf_file <- dir("../working_data", "sorted_mutant1.vcf",full.names = TRUE)[2]
-dna_file <- dir("../working_data/", "sequence.fasta", full.names = TRUE)[1]
-gff_file <- dir("../raw_data/", "GCF_000005845.2_ASM584v2_genomic.gff", full.names = TRUE)
+You will now have the alignment (files ending with `.bam` and its index `.bam.bai`), and the variant call file (`.vcf`), which are the end points of the computational analysis. You should download them and the reference sequence, index and annotation files (`ref/NC_012967.1.*`) to your local computer.
 
-vcf <- read.vcfR(vcf_file, verbose = FALSE)
-dna <- ape::read.dna(dna_file, format = "fasta")
-gff <- read.table(gff_file, sep="\t", quote="")
+Here is a walthrough of how to load the data:
 
-chrom <- create.chromR(name="Supercontig", vcf=vcf, seq=dna, ann=gff, verbose=FALSE)
-chrom <- proc.chromR(chrom, verbose = TRUE)
-
-head(chrom)
-plot(chrom) #plots the quality scores
-chromoqc(chrom, dp.alpha = 22) #plots the mapped variants on the reference genome.
-
-#filter the variants-
-chrom <- masker(chrom, min_QUAL=10)
-chrom <- proc.chromR(chrom, verbose = FALSE)
-chromoqc(chrom, dp.alpha = 22) #plots the mapped variants on the reference genome.
-
-write.vcf(chrom, file="../working_data/filtered_sorted_mutant1.vcf.gz",mask = TRUE)
-system("gunzip ../working_data/filtered_sorted_mutant1.vcf.gz")
-
-
-
-#Step7- Use IGV to visualize the variants against the reference genome-https://igv.org/app/ OR have a look at the saved session "igv_session_mutant1.xml".
-#Load on Firefox web-browser
-
-#1.click on the IGV link above
-#2.load the "sequence.fasta" + "sequence.fasta.fai" file through "Genomes" tab.
-#3.load the "sorted_mutant1.bam" +"sorted_mutant1.bam.bai" through "File" tab.
-#4.load the "sorted_mutant1.vcf" file through "File" tab.
-#5.type "4160123|ref|NC_012967.1|:171,050-171,850" in the search column to examine the FhuA gene in E.coli
-
-
-###Question: Repeat all the above steps with the remaining E.coli mutant and wild-type reads. 
-#Q1/Are the mutation profile similar for all the mutants?
-#Q2/What is the difference between the mutants and wild-type sample? Is the wild-type more similar to the reference genome?
+<iframe width="560" height="315" src="https://www.youtube.com/embed/hhCeJD7HRdI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
