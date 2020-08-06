@@ -42,8 +42,6 @@ samtools index {sequencedSample}.bam"))
 system(bowtieCommand)
 ```
 
-Ignore the `cat` command and the `intern = T` argument. They exist only to make the output prettier if you convert this document to HTML.
-
 You will see that a files called `sequencedSample.bam` and its corresponding index `sequencedSample.bam.bai` have been created in the root directory, where `sequencedSample` is the name of the variable you assigned in the this code chunk. You'll need both files for the genome browser later.
 
 What's inside an alignemnt file? You can read all about it in the [SAM format specification](https://samtools.github.io/hts-specs/SAMv1.pdf). Note that this is a file with a `.bam` extension, but it is basically just a compressed `.sam` file.
@@ -51,6 +49,8 @@ What's inside an alignemnt file? You can read all about it in the [SAM format sp
 ```{r}
 cat(system(glue("samtools view {sequencedSample}.bam | head -5"), intern = T))
 ```
+
+Ignore the `cat` command and the `intern = T` argument. They exist only to make the output prettier if you convert this document to HTML.
 
 ## Variant Calling
 
